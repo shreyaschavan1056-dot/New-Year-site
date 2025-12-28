@@ -2,20 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Happy New Year, My Love ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --pink: #ff758c;
-            --gold: #ffda79;
+            --dark-pink: #ff5e78;
         }
+
+        /* Essential for mobile responsiveness */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body, html {
             margin: 0; padding: 0;
             width: 100%; height: 100%;
             font-family: 'Quicksand', sans-serif;
-            background: #000000; /* Pure black background */
+            background: #000000;
             overflow: hidden;
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
@@ -28,85 +31,111 @@
             pointer-events: none;
         }
 
-        /* --- Countdown UI --- */
+        /* --- Responsive UI Wrapper --- */
         #ui-wrapper {
             position: relative;
             z-index: 10;
             text-align: center;
-            background: rgba(0, 0, 0, 0.5); /* Slightly darker backing */
-            padding: 30px;
-            border-radius: 30px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 20px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 90%;
+            max-width: 450px;
         }
 
         .title {
             font-family: 'Dancing Script', cursive;
-            font-size: 2.8rem;
+            font-size: clamp(1.8rem, 8vw, 2.8rem); /* Fluid font size */
             color: var(--pink);
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px rgba(255, 117, 140, 0.5);
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(255, 117, 140, 0.5);
         }
 
-        #timer { display: flex; gap: 10px; justify-content: center; }
+        #timer { 
+            display: flex; 
+            gap: 8px; 
+            justify-content: center; 
+            flex-wrap: wrap; /* Wraps on very small screens */
+        }
+
         .unit {
             background: rgba(255, 255, 255, 0.1);
-            padding: 15px; border-radius: 15px;
-            min-width: 70px; border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px; border-radius: 12px;
+            flex: 1; /* Equal width units */
+            min-width: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .unit span { display: block; font-size: 1.8rem; font-weight: bold; color: white; }
-        .unit label { font-size: 0.7rem; color: #aaa; text-transform: uppercase; }
+
+        .unit span { display: block; font-size: clamp(1.2rem, 5vw, 1.8rem); font-weight: bold; color: white; }
+        .unit label { font-size: 0.6rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
 
         /* --- Button --- */
         #unlockBtn {
-            margin-top: 30px;
-            padding: 20px 50px; font-size: 1.3rem; font-weight: bold;
-            border: none; border-radius: 50px; color: #555;
-            background: #2d3436; cursor: not-allowed;
-            transition: all 0.5s ease;
+            margin-top: 25px;
+            padding: 15px 30px; 
+            width: 100%;
+            font-size: 1.1rem; font-weight: bold;
+            border: none; border-radius: 50px; color: #777;
+            background: #222; cursor: not-allowed;
+            transition: all 0.4s ease;
         }
 
         #unlockBtn.ready {
             background: var(--pink); color: white;
-            cursor: pointer; box-shadow: 0 0 30px rgba(255, 117, 140, 0.6);
-            animation: glow 2s infinite;
+            cursor: pointer; box-shadow: 0 0 20px rgba(255, 117, 140, 0.6);
+            animation: pulse 2s infinite;
         }
 
-        @keyframes glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 
-        /* --- Pop-up & Scroll --- */
+        /* --- Pop-up Overlay --- */
         #overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.9);
             display: none; z-index: 100;
             justify-content: center; align-items: center;
+            padding: 15px;
         }
 
         #popup {
-            width: 90%; max-width: 420px; height: 80vh;
-            background: white; border-radius: 30px;
+            width: 100%;
+            max-width: 420px; 
+            height: auto;
+            max-height: 85vh; /* Prevents overflow on short screens */
+            background: white; border-radius: 25px;
             overflow-y: auto; position: relative;
-            transform: scale(0.8); opacity: 0;
-            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(0.9); opacity: 0;
+            transition: all 0.5s ease-out;
+            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
         }
 
         #popup::-webkit-scrollbar { display: none; }
         #popup.active { transform: scale(1); opacity: 1; }
 
         .photo-header { width: 100%; line-height: 0; }
-        .photo-header img { width: 100%; border-radius: 30px 30px 0 0; }
-
-        .letter-body {
-            padding: 30px 25px;
-            font-family: 'Dancing Script', cursive;
-            font-size: 1.8rem; color: #333;
-            line-height: 1.6; text-align: center;
+        .photo-header img { 
+            width: 100%; 
+            border-radius: 25px 25px 0 0; 
+            display: block; 
         }
 
+        .letter-body {
+            padding: 25px 20px;
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1.4rem, 5vw, 1.8rem); 
+            color: #333;
+            line-height: 1.5; text-align: center;
+        }
+
+        /* --- Floating Controls --- */
         #musicToggle {
-            position: fixed; top: 20px; right: 20px;
-            background: rgba(255,255,255,0.1); border: none; color: white;
-            padding: 12px; border-radius: 50%; cursor: pointer; z-index: 1000; display: none;
+            position: fixed; top: 15px; right: 15px;
+            background: rgba(255,255,255,0.15); border: none; color: white;
+            width: 45px; height: 45px; border-radius: 50%; 
+            cursor: pointer; z-index: 1000; display: none;
+            backdrop-filter: blur(5px);
         }
     </style>
 </head>
@@ -118,47 +147,43 @@
     <button id="musicToggle">🎵</button>
 
     <div id="ui-wrapper">
-        <h1 class="title">Wait for the Magic...</h1>
+        <h1 class="title">Waiting for 2026...</h1>
         <div id="timer">
             <div class="unit"><span id="days">00</span><label>Days</label></div>
             <div class="unit"><span id="hours">00</span><label>Hrs</label></div>
             <div class="unit"><span id="mins">00</span><label>Mins</label></div>
             <div class="unit"><span id="secs">00</span><label>Secs</label></div>
         </div>
-        <button id="unlockBtn">🔒 Locked Until 2026</button>
+        <button id="unlockBtn">🔒 Locked Until Midnight</button>
     </div>
 
     <div id="overlay">
         <div id="popup">
             <div class="photo-header">
-                <img src="photo.png" alt="Our Special Memory">
+                <img src="photo.png" alt="Memory">
             </div>
             <div class="letter-body">
                 <p id="typedText"></p>
-                <div style="height: 100px;"></div>
-                <p style="font-size: 1.2rem; opacity: 0.5;">(Scroll down ❤️)</p>
-                <div style="height: 200px;"></div>
-                <p>You are my favorite person in every universe.</p>
-                <p>I can't wait to spend 365 more days with you.</p>
-                <p style="font-size: 2.5rem; color: var(--pink);">I Love You!</p>
-                <div style="height: 50px;"></div>
+                <div style="height: 60px;"></div>
+                <p style="font-size: 1rem; opacity: 0.4; font-family: 'Quicksand';">(Scroll down for more ❤️)</p>
+                <div style="height: 150px;"></div>
+                <p>Every year with you is better than the last.</p>
+                <p>I can't wait to see your beautiful face in 2026.</p>
+                <p style="font-size: 2.2rem; color: var(--pink);">I Love You Always!</p>
+                <div style="height: 40px;"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // 1. SETUP TARGET DATE (Jan 1, 2026)
-        // REMEMBER TO CHANGE THIS BACK TO "Jan 1, 2026 00:00:00" BEFORE SENDING!
-        const targetDate = new Date("Jan 1, 2026 00:00:00").getTime();
-        
-        const letter = "My Love, As 2026 begins, I just wanted to remind you how much you mean to me. This photo is a symbol of all the beautiful moments we've shared. I promise to make this year even more magical for you. Let's grow, laugh, and love together forever...";
+        // 1. DATE CONFIG (Set to Jan 1, 2026)
+        const targetDate = new Date("Jan 1, 2025 00:00:00").getTime();
+        const letter = "My Love, Happy New Year! ✨ Looking back at our memories makes me so grateful to have you. You are my greatest blessing, and I promise to love you more with every heartbeat in 2026...";
 
-        // 2. REALISTIC FIREWORKS ENGINE (No White Effect)
+        // 2. RESPONSIVE FIREWORKS ENGINE (Vivid Color, No White Wash)
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        let width, height;
-        let fireworkArray = [];
-        let particleArray = [];
+        let width, height, fireworkArray = [], particleArray = [];
 
         function resize() {
             width = canvas.width = window.innerWidth;
@@ -171,7 +196,7 @@
             constructor() {
                 this.x = Math.random() * width;
                 this.y = height;
-                this.targetY = Math.random() * (height * 0.5) + 50;
+                this.targetY = Math.random() * (height * 0.4) + 50;
                 this.velocity = Math.random() * 3 + 5;
                 this.hue = Math.floor(Math.random() * 360);
                 this.exploded = false;
@@ -185,12 +210,13 @@
             }
             draw() {
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
-                ctx.fillStyle = `hsl(${this.hue}, 100%, 50%)`;
+                ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                ctx.fillStyle = `hsl(${this.hue}, 100%, 60%)`;
                 ctx.fill();
             }
             explode() {
-                for (let i = 0; i < 100; i++) {
+                const count = width < 500 ? 50 : 100; // Fewer particles on mobile for performance
+                for (let i = 0; i < count; i++) {
                     particleArray.push(new Particle(this.x, this.y, this.hue));
                 }
             }
@@ -198,13 +224,12 @@
 
         class Particle {
             constructor(x, y, hue) {
-                this.x = x;
-                this.y = y;
-                this.hue = hue + (Math.random() * 40 - 20); // slight color variation
+                this.x = x; this.y = y;
+                this.hue = hue + (Math.random() * 30 - 15);
                 this.angle = Math.random() * Math.PI * 2;
-                this.speed = Math.random() * 5 + 2;
-                this.friction = 0.95;
-                this.gravity = 0.08;
+                this.speed = Math.random() * 4 + 1;
+                this.friction = 0.96;
+                this.gravity = 0.1;
                 this.alpha = 1;
                 this.decay = Math.random() * 0.02 + 0.01;
             }
@@ -215,40 +240,25 @@
                 this.alpha -= this.decay;
             }
             draw() {
-                // Removed 'lighter' composite operation to prevent white blowout
                 ctx.globalCompositeOperation = 'source-over'; 
                 ctx.beginPath();
-                // Using hue, saturation, lightness, alpha for rich color
-                ctx.fillStyle = `hsla(${this.hue}, 100%, 55%, ${this.alpha})`;
-                ctx.arc(this.x, this.y, 2.5, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${this.hue}, 100%, 60%, ${this.alpha})`;
+                ctx.arc(this.x, this.y, 1.8, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
 
         function animate() {
-            // Use pure black with low opacity for trail effect without gray haze
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.25)'; 
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)'; 
             ctx.fillRect(0, 0, width, height);
-            
             if (Math.random() < 0.04) fireworkArray.push(new Firework());
-
-            fireworkArray.forEach((fw, i) => {
-                fw.update();
-                fw.draw();
-                if (fw.exploded) fireworkArray.splice(i, 1);
-            });
-
-            particleArray.forEach((p, i) => {
-                p.update();
-                p.draw();
-                if (p.alpha <= 0) particleArray.splice(i, 1);
-            });
-
+            fireworkArray.forEach((fw, i) => { fw.update(); fw.draw(); if (fw.exploded) fireworkArray.splice(i, 1); });
+            particleArray.forEach((p, i) => { p.update(); p.draw(); if (p.alpha <= 0) particleArray.splice(i, 1); });
             requestAnimationFrame(animate);
         }
         animate();
 
-        // 3. LOGIC & UNLOCK
+        // 3. UI LOGIC
         const unlockBtn = document.getElementById('unlockBtn');
         const audio = document.getElementById('bgMusic');
         const musicToggle = document.getElementById('musicToggle');
@@ -269,7 +279,7 @@
             } else {
                 unlockBtn.classList.add('ready');
                 unlockBtn.innerHTML = "🎁 Click for Your Message ❤️";
-                document.querySelector('.title').innerText = "Happy New Year, Princess!";
+                document.querySelector('.title').innerText = "Happy New Year, Love!";
             }
         }
         setInterval(updateTimer, 1000);
@@ -292,11 +302,11 @@
              if (audio.paused) audio.play(); else audio.pause();
         });
 
-        let i = 0;
+        let charI = 0;
         function typeWriter() {
-            if (i < letter.length) {
-                document.getElementById("typedText").innerHTML += letter.charAt(i);
-                i++;
+            if (charI < letter.length) {
+                document.getElementById("typedText").innerHTML += letter.charAt(charI);
+                charI++;
                 setTimeout(typeWriter, 50);
             }
         }
