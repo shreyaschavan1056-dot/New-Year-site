@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Happy New Year, My Love ❤️</title>
+    <title>Happy New Year, My Love</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         :root {
             --pink: #ff758c;
@@ -47,7 +49,7 @@
 
         .title {
             font-family: 'Dancing Script', cursive;
-            font-size: clamp(1.8rem, 8vw, 2.8rem); /* Fluid font size */
+            font-size: clamp(1.8rem, 8vw, 2.8rem); 
             color: var(--pink);
             margin-bottom: 15px;
             text-shadow: 0 0 15px rgba(255, 117, 140, 0.5);
@@ -57,13 +59,13 @@
             display: flex; 
             gap: 8px; 
             justify-content: center; 
-            flex-wrap: wrap; /* Wraps on very small screens */
+            flex-wrap: wrap; 
         }
 
         .unit {
             background: rgba(255, 255, 255, 0.1);
             padding: 10px; border-radius: 12px;
-            flex: 1; /* Equal width units */
+            flex: 1; 
             min-width: 60px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
@@ -80,6 +82,10 @@
             border: none; border-radius: 50px; color: #777;
             background: #222; cursor: not-allowed;
             transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
         #unlockBtn.ready {
@@ -103,12 +109,12 @@
             width: 100%;
             max-width: 420px; 
             height: auto;
-            max-height: 85vh; /* Prevents overflow on short screens */
+            max-height: 85vh; 
             background: white; border-radius: 25px;
             overflow-y: auto; position: relative;
             transform: scale(0.9); opacity: 0;
             transition: all 0.5s ease-out;
-            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+            -webkit-overflow-scrolling: touch; 
         }
 
         #popup::-webkit-scrollbar { display: none; }
@@ -136,6 +142,7 @@
             width: 45px; height: 45px; border-radius: 50%; 
             cursor: pointer; z-index: 1000; display: none;
             backdrop-filter: blur(5px);
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -144,7 +151,7 @@
     <canvas id="canvas"></canvas>
 
     <audio id="bgMusic" loop><source src="music.mp3" type="audio/mpeg"></audio>
-    <button id="musicToggle">🎵</button>
+    <button id="musicToggle"><i class="fas fa-music"></i></button>
 
     <div id="ui-wrapper">
         <h1 class="title">Waiting for 2026...</h1>
@@ -154,7 +161,9 @@
             <div class="unit"><span id="mins">00</span><label>Mins</label></div>
             <div class="unit"><span id="secs">00</span><label>Secs</label></div>
         </div>
-        <button id="unlockBtn">🔒 Locked Until Midnight</button>
+        <button id="unlockBtn">
+            <i class="fas fa-lock"></i> Locked Until Midnight
+        </button>
     </div>
 
     <div id="overlay">
@@ -165,11 +174,11 @@
             <div class="letter-body">
                 <p id="typedText"></p>
                 <div style="height: 60px;"></div>
-                <p style="font-size: 1rem; opacity: 0.4; font-family: 'Quicksand';">(Scroll down for more 🥹)</p>
+                <p style="font-size: 1rem; opacity: 0.4; font-family: 'Quicksand';">(Scroll down for more)</p>
                 <div style="height: 150px;"></div>
                 <p>Every year with you is better than the last.</p>
                 <p>I can't wait to see your beautiful face in 2026.</p>
-                <p style="font-size: 2.2rem; color: var(--pink);">I Love Youuuu sooo muchhhhhhh 🥺!</p>
+                <p style="font-size: 2.2rem; color: var(--pink);">I Love You so much!</p>
                 <div style="height: 40px;"></div>
             </div>
         </div>
@@ -178,9 +187,11 @@
     <script>
         // 1. DATE CONFIG (Set to Jan 1, 2026)
         const targetDate = new Date("Jan 1, 2026 00:00:00").getTime();
-        const letter = "My Love, Happy New Year! ✨ I know, I make mistake in 2025 that you never forgive me but Looking back at our memories makes me so grateful to have you. You are my greatest blessing and gift from god, I loved....I love you..... and keep loving you more and more<3 Once again last I'm really really very sorry about my silly things which hurted your feelings but I hope you'll forgive me.... lovee you soo muchh🥺❤️... ";
+        
+        // Emojis removed from the text string
+        const letter = "My Love, Happy New Year! I know I made mistakes in 2025 that were hard to forgive, but looking back at our memories makes me so grateful to have you. You are my greatest blessing and gift from God. I loved you... I love you... and I will keep loving you more and more. Once again, I am really very sorry about the silly things which hurt your feelings, but I hope you'll forgive me. I love you so much.";
 
-        // 2. RESPONSIVE FIREWORKS ENGINE (Vivid Color, No White Wash)
+        // 2. FIREWORKS ENGINE
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let width, height, fireworkArray = [], particleArray = [];
@@ -215,7 +226,7 @@
                 ctx.fill();
             }
             explode() {
-                const count = width < 500 ? 50 : 100; // Fewer particles on mobile for performance
+                const count = width < 500 ? 50 : 100;
                 for (let i = 0; i < count; i++) {
                     particleArray.push(new Particle(this.x, this.y, this.hue));
                 }
@@ -278,7 +289,8 @@
                 document.getElementById('secs').innerText = s < 10 ? "0"+s : s;
             } else {
                 unlockBtn.classList.add('ready');
-                unlockBtn.innerHTML = "🎁 Click for Your Message ❤️";
+                // Icon used here instead of emoji
+                unlockBtn.innerHTML = '<i class="fas fa-gift"></i> Click for Your Message <i class="fas fa-heart"></i>';
                 document.querySelector('.title').innerText = "Happy New Year, Love!";
             }
         }
